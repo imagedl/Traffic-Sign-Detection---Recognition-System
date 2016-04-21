@@ -2,7 +2,10 @@ function TrafficSignSystem()
 %% Complete Traffic Sign detector and recognition system
 tic
 clear all;
-aviobj = avifile('video_KUL.avi','FPS',8,'compression','Indeo5');
+%aviobj = avifile('video_KUL.avi','FPS',8,'compression','Indeo5');
+aviobj=videowriter('video_KUL.avi');
+aviobj.FrameRate=8;
+open(aviobj);
 directory = '.\KUL-seq01';        %Images folder
 % directory = '.\CVC-02-seq-05';
 files = ListFiles(directory);
@@ -27,7 +30,7 @@ for i=1:size(files,1)
     Detection_Windows=detectorBB_Sliding_SVM(windowCandidates,im,model_HOG); %Detector completo (Sliding+Clasificador+Clustering)    
     [Predicciones,error]=trafficSignRecognizer(im,Detection_Windows);
     
-    % Dibujamos la imagen de la señal detectada encima de la original
+    % Dibujamos la imagen de la seÃ±al detectada encima de la original
     if ((isempty(Predicciones)==0)&(Predicciones~=0))
     for l=1:length(Predicciones)
         if (error(l)<=0.75)
@@ -53,11 +56,12 @@ for i=1:size(files,1)
     subplot(1,2,2), subimage(segmentedIm.*255), set(gca,'xtick',[],'ytick',[]),
     fig=figure(1);
     F = getframe(fig);
-    aviobj = addframe(aviobj,F);
+    %aviobj = addframe(aviobj,F);
+    writeVideo(aviobj,F);
 end
 close(fig);
-aviobj = close(aviobj);
-disp('Tiempo de cálculo en segundos'), disp(toc)
+close(aviobj);
+disp('Tiempo de cÃ¡lculo en segundos'), disp(toc)
 
 end
 
